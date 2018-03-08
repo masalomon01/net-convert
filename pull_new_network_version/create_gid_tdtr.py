@@ -1,7 +1,7 @@
 import pg8000 as pg
 import csv
 import sys
-
+import config
 
 def read_sys_args(args):
     try:
@@ -31,7 +31,7 @@ def parse_restriction(restriction):
 
 if __name__ == '__main__':
     folder, city = read_sys_args(sys.argv)
-    conn = pg.connect(user='networkland', password='M+gis>ptv', host='postgresql.crvadswmow49.us-west-2.rds.amazonaws.com', database='Networkland')  # port default 5432cursor = conn.cursor()
+    conn = pg.connect(user=config.NETWORKLAND_USER, password=config.NETWORKLAND_PASSWORD, host=config.NETWORKLAND_URL, database=config.NETWORKLAND_DB)  # port default 5432cursor = conn.cursor()
     cursor = conn.cursor()
     outfile = open(folder+'gid_tdtr.csv', 'wb')
     query = 'SELECT from_link, to_link, monday, tuesday, wednesday, thursday, friday, saturday, sunday, from_time1, to_time1, from_time2, to_time2 FROM {}_tdtr'.format(city)

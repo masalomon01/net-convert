@@ -1,6 +1,8 @@
 import psycopg2
 from datetime import datetime
 import sys
+import config
+
 
 def read_sys_args(args):
     try:
@@ -19,7 +21,7 @@ if __name__ == '__main__':
         city, in_file = read_sys_args(sys.argv)
 
     schema_name = 'dev_wkts'
-    conn = psycopg2.connect(user='networkland', password='M+gis>ptv', host='postgresql.crvadswmow49.us-west-2.rds.amazonaws.com', database='Networkland')  # port default 5432
+    conn = psycopg2.connect(user=config.NETWORKLAND_USER, password=config.NETWORKLAND_PASSWORD, host=config.NETWORKLAND_URL, database=config.NETWORKLAND_DB)  # port default 5432
     cur = conn.cursor()
     current_time = str(datetime.now().replace(microsecond=0)).replace(' ', '_').replace('-', '').replace(':', '')
     table_name = "{}_wkt_{}".format(city, current_time)

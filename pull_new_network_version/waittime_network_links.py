@@ -2,6 +2,7 @@ from pandas import read_csv
 import json, os, time, datetime, pytz, math, csv, sys
 import pg8000 as pg
 import pandas as pd
+import config
 
 
 def read_sys_args(args):
@@ -94,7 +95,7 @@ def get_sequence(l, ls):
 
 
 def get_gids(table):
-	conn = pg.connect(user='networkland', password='M+gis>ptv', host='postgresql.crvadswmow49.us-west-2.rds.amazonaws.com', database='Networkland')  # port default 5432
+	conn = pg.connect(user=config.NETWORKLAND_USER, password=config.NETWORKLAND_PASSWORD, host=config.NETWORKLAND_URL, database=config.NETWORKLAND_DB)  # port default 5432
 	cursor = conn.cursor()
 	city = 'elpaso_juarez'
 	links_dict = {}
@@ -102,7 +103,7 @@ def get_gids(table):
 	for index, row in ref_table.iterrows():
 		query = "SELECT {}.gid,  {}.special_type, ST_AsText({}.geom), {}.access " \
 			"FROM {}, {}_poe_segments " \
-			"WHERE ST_INTERSECTS({}.geom, {}_poe_segments.geom) and {}_poe_segments.id in {} and {}.access in {} ".format(city, city, city, city, city, city, city, city, city, row['segment_id'], city, row['access'].lower())
+			"WHERE ST_INTERSECTS({}.geom, {}_poe_segments.geom) and {}_poe_segments.id in {} and {}.access in {} ".format(city, city, city, city, city, city, city, city, city, row['segment_id'], city, row['access'])
 		cursor.execute(query)
 		results = cursor.fetchall()
 		links = []
@@ -149,6 +150,10 @@ def get_gids(table):
 			lol = [l1]
 			total_length = [total_l1]
 
+		if access not in ('pov', 'cargo', 'sentri'):
+			access = 'pov'
+		else:
+			pass
 
 		#print row['id'], row['segment_id'], l1, l2
 		links_dict[row['id']] = lol, total_length
@@ -184,7 +189,7 @@ if __name__ == '__main__':
 		PORT_LINKS_FILENAME = os.path.join(folder, 'ports_links.json')
 		# the following dict matches the ref bridge ids with the corresponding segment ids. This is important to get the correct links fir each bridge
 		# {bridge_id : [segment_id, direction of end bridge}  ST_ymin = SOUTH, ST_ymax = NORTH, ST_xmin = WEST , ST_xmax = EAST
-		ref_segment_dict = {32:[(610, 613, 614), ('pov')], 1:[(594), ('pov')], 7:[(622), ('pov')], 42:[(645),('pov')], 22:[(665), ('pov')], 53:[(673), ('pov')], 46:[(764), ('pov')], 15:[(737), ('pov')], 58:[(712), ('pov')], 27:[(690), ('pov')], 12:[(633), ('sentri')], 17:[(744), ('sentri')], 3:[(583), ('cargo')], 34:[(600), ('cargo')], 55:[(669), ('cargo')], 24:[(656), ('cargo')], 49:[(752), ('cargo')], 18:[(724), ('cargo')]}
+		ref_segment_dict = {32:["(610, 613, 614)", "('pov', 'sb_bota_1')"], 1:['(594)', "('pov')"], 7:["(622)", "('pov')"], 42:["(645)","('pov')"], 22:["(665)", "('pov')"], 53:["(673)", "('pov')"], 46:["(764)", "('pov')"], 15:["(737)", "('pov')"], 58:["(712)", "('pov')"], 27:["(690)", "('pov')"], 12:["(633)", "('sentri')"], 17:["(744)", "('sentri')"], 3:["(583)", "('cargo')"], 34:["(600)", "('cargo', 'sb_bota_2')"], 55:["(669)", "('cargo')"], 24:["(656)", "('cargo')"], 49:["(752)", "('cargo')"], 18:["(724)", "('cargo')"]}
 		#ref_segment_dict = {1:[594, 'pov']}#, 1:[594, 'pov'], 7:[622, 'pov'], 42:[645,'pov'], 22:[665, 'pov'], 53:[673, 'pov'], 46:[764, 'pov'], 15:[737, 'pov'], 58:[712, 'pov'], 27:[690, 'pov'], 12:[633, 'sentri'], 17:[744, 'sentri'], 3:[583, 'cargo'], 34:[600, 'cargo'], 55:[669, 'cargo'], 24:[656, 'cargo'], 49:[752, 'cargo'], 18:[724, 'cargo']}
 		ref_table = read_csv(os.path.join(folder, 'ref_table.csv'))
 		ref_table = ref_table[ref_table['id'].isin(ref_segment_dict.keys())].reset_index()

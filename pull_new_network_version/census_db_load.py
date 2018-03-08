@@ -2,13 +2,14 @@ import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_SERIALIZABLE
 import sys
 import cStringIO
+import config
 
 
-con1 = psycopg2.connect(database="Networkland", user="networkland", password="M+gis>ptv", host="postgresql.crvadswmow49.us-west-2.rds.amazonaws.com")
+con1 = psycopg2.connect(database=config.NETWORKLAND_DB, user=config.NETWORKLAND_USER, password=config.NETWORKLAND_PASSWORD, host=config.NETWORKLAND_URL)
 cur1 = con1.cursor()
 
 # sandbox and dev connections
-con2 = psycopg2.connect(database="d9crmiih79tddt", user="dtolyqrislafqi", password="5a3d4791e40522df04870a9fb280348eac48e6bffb799095000b2305b61cbbbc", host="ec2-23-23-228-115.compute-1.amazonaws.com")
+con2 = psycopg2.connect(database=config.NETWORKSERVICE_SB_DB, user=config.NETWORKSERVICE_SB_USER, password=config.NETWORKSERVICE_SB_PASSWORD, host=config.NETWORKSERVICE_SB_URL)
 cur2 = con2.cursor()
 
 # production connection

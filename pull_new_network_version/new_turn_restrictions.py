@@ -1,6 +1,7 @@
 import pg8000 as pg
 import csv
 import sys
+import config
 
 
 def read_sys_args(args):
@@ -19,7 +20,7 @@ def parse_days(restr):
     day_string = str([1 if x else 0 for x in days])
     return day_string
 
-conn = pg.connect(user='networkland', password='M+gis>ptv', host='postgresql.crvadswmow49.us-west-2.rds.amazonaws.com', database='Networkland')  # port default 5432
+conn = pg.connect(user=config.NETWORKLAND_USER, password=config.NETWORKLAND_PASSWORD, host=config.NETWORKLAND_URL, database=config.NETWORKLAND_DB)  # port default 5432
 cursor = conn.cursor()
 folder, city = read_sys_args(sys.argv)
 infile = open(folder + 'parade gid zone.csv', 'rb')

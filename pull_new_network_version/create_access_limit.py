@@ -1,5 +1,6 @@
 import pg8000 as pg
 import csv, sys, os, json
+import config
 
 def read_sys_args(args):
     try:
@@ -23,10 +24,10 @@ def read_wkt(infile):
 
 
 def read_access(city_name, id_mapping):
-    conn = pg.connect(user='read_only',
-                      password='only4metropians',
-                      host='postgresql.crvadswmow49.us-west-2.rds.amazonaws.com',
-                      database='Networkland')  # port default 5432
+    conn = pg.connect(user=config.NETWORKLAND_USER,
+                      password=config.NETWORKLAND_PASSWORD,
+                      host=config.NETWORKLAND_URL,
+                      database=config.NETWORKLAND_DB)  # port default 5432
     cursor = conn.cursor()
     query = "SELECT gid, access FROM {} WHERE access is not NULL and access != '' ".format(city_name)
     cursor.execute(query)
@@ -50,10 +51,10 @@ def read_access(city_name, id_mapping):
 
 
 def read_toll(city_name, id_mapping):
-    conn = pg.connect(user='read_only',
-                      password='only4metropians',
-                      host='postgresql.crvadswmow49.us-west-2.rds.amazonaws.com',
-                      database='Networkland')  # port default 5432
+    conn = pg.connect(user=config.NETWORKLAND_USER,
+                      password=config.NETWORKLAND_PASSWORD,
+                      host=config.NETWORKLAND_URL,
+                      database=config.NETWORKLAND_DB)  # port default 5432
     cursor = conn.cursor()
     query = "SELECT gid, toll FROM {} WHERE toll is not NULL AND toll != 0".format(city_name)
     cursor.execute(query)

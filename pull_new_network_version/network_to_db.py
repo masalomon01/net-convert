@@ -4,6 +4,8 @@ import sys
 import os
 import csv
 import heroku3
+import config
+
 
 def read_sys_args(args):
 	try:
@@ -18,22 +20,22 @@ def read_sys_args(args):
 		raise IndexError('Incorrect inputs.  Arg1 should be city name and Arg2 should be input wkt')
 	if sys == "developer":
 		schema_name = 'developer'
-		conn = psycopg2.connect(user='mario',
-		                        password='salermo01',
-		                        host='70.184.89.171',
-		                        database='developer')  # port default 5432
+		conn = psycopg2.connect(user=config.NETWORKSERVICE_DEV_USER,
+		                        password=config.NETWORKSERVICE_DEV_PASSWORD,
+		                        host=config.NETWORKSERVICE_DEV_URL,
+		                        database=config.NETWORKSERVICE_DEV_DB)  # port default 5432
 	elif sys == 'sandbox':
 		schema_name = 'sandbox'
-		conn = psycopg2.connect(user='dtolyqrislafqi',
-		                        password='5a3d4791e40522df04870a9fb280348eac48e6bffb799095000b2305b61cbbbc',
-		                        host='ec2-23-23-228-115.compute-1.amazonaws.com',
-		                        database='d9crmiih79tddt')  # port default 5432
+		conn = psycopg2.connect(user=config.NETWORKSERVICE_SB_USER,
+		                        password=config.NETWORKSERVICE_SB_PASSWORD,
+		                        host=config.NETWORKSERVICE_SB_URL,
+		                        database=config.NETWORKSERVICE_SB_DB)  # port default 5432
 	elif sys == 'production':
 		schema_name = 'production'
-		conn = psycopg2.connect(user='u4vuqnmf29u9ls',
-		                        password='pb637b42549b9d70e12fe3e6c8e092973abfa0afccf0b5c5691b4e9a5a72a8ab8',
-		                        host='ec2-34-233-65-7.compute-1.amazonaws.com',
-		                        database='d7a1ehnrppums')  # port default 5432
+		conn = psycopg2.connect(user=config.NETWORKSERVICE_PD_USER,
+		                        password=config.NETWORKSERVICE_PD_PASSWORD,
+		                        host=config.NETWORKSERVICE_PD_URL,
+		                        database=config.NETWORKSERVICE_PD_DB)  # port default 5432
 	else:
 		print("error inorrect system", sys)
 		schema_name = None
@@ -345,19 +347,24 @@ if __name__ == '__main__':
 		sys = sys.argv[2]  # sandbox, developer, pd
 		in_file = os.getcwd()
 		schema_name = sys  # you might het an error if the schema does not exist on the db
-		if sys == 'production':
-			conn = psycopg2.connect(user='u4vuqnmf29u9ls',
-			                        password='pb637b42549b9d70e12fe3e6c8e092973abfa0afccf0b5c5691b4e9a5a72a8ab8',
-			                        host='ec2-34-233-65-7.compute-1.amazonaws.com',
-			                        database='d7a1ehnrppums')  # port default 5432
+		if sys == "developer":
+			schema_name = 'developer'
+			conn = psycopg2.connect(user=config.NETWORKSERVICE_DEV_USER,
+									password=config.NETWORKSERVICE_DEV_PASSWORD,
+									host=config.NETWORKSERVICE_DEV_URL,
+									database=config.NETWORKSERVICE_DEV_DB)  # port default 5432
 		elif sys == 'sandbox':
-			conn = psycopg2.connect(user='dtolyqrislafqi',
-									password='5a3d4791e40522df04870a9fb280348eac48e6bffb799095000b2305b61cbbbc',
-									host='ec2-23-23-228-115.compute-1.amazonaws.com',
-									database='d9crmiih79tddt')  # port default 5432
-		elif sys == "developer":
-			conn = psycopg2.connect(user='mario', password='salermo01', host='70.184.89.171',
-		                        database='developer')  # port default 5432
+			schema_name = 'sandbox'
+			conn = psycopg2.connect(user=config.NETWORKSERVICE_SB_USER,
+									password=config.NETWORKSERVICE_SB_PASSWORD,
+									host=config.NETWORKSERVICE_SB_URL,
+									database=config.NETWORKSERVICE_SB_DB)  # port default 5432
+		elif sys == 'production':
+			schema_name = 'production'
+			conn = psycopg2.connect(user=config.NETWORKSERVICE_PD_USER,
+									password=config.NETWORKSERVICE_PD_PASSWORD,
+									host=config.NETWORKSERVICE_PD_URL,
+									database=config.NETWORKSERVICE_PD_DB)  # port default 5432
 		else:
 			print('please enter the correct second argument for production, developer or sandbox')
 	else:

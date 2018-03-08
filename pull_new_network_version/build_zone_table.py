@@ -3,6 +3,7 @@ import csv
 import time
 import sys
 import os
+import config
 
 
 def read_sys_args(args):
@@ -46,7 +47,7 @@ if __name__ == '__main__':
 
     in_wkt = open(folder + city + '/links_wkt.csv', 'rb')
     out_file = open(folder + 'parade gid zone.csv', 'wb')
-    conn = pg.connect(user='networkland', password='M+gis>ptv', host='postgresql.crvadswmow49.us-west-2.rds.amazonaws.com', database='Networkland')  # port default 5432
+    conn = pg.connect(user=config.NETWORKLAND_USER, password=config.NETWORKLAND_PASSWORD, host=config.NETWORKLAND_URL, database=config.NETWORKLAND_DB)  # port default 5432
     cursor = conn.cursor()
 
     query = "SELECT {}.gid, {}_zones.zone " \

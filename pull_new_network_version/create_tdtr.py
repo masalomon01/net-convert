@@ -2,6 +2,7 @@ import csv
 import pg8000 as pg
 import operator
 import sys
+import config
 
 
 def read_sys_args(args):
@@ -29,7 +30,7 @@ def parse_restriction(restriction, number_successors, index_of_restriction):
     return r
 
 
-conn = pg.connect(user='networkland', password='M+gis>ptv', host='postgresql.crvadswmow49.us-west-2.rds.amazonaws.com', database='Networkland')  # port default 5432cursor = conn.cursor()
+conn = pg.connect(user=config.NETWORKLAND_USER, password=config.NETWORKLAND_PASSWORD, host=config.NETWORKLAND_URL, database=config.NETWORKLAND_DB)  # port default 5432cursor = conn.cursor()
 cursor = conn.cursor()
 folder, city = read_sys_args(sys.argv)
 in_wkt = open(folder+'{}/links_wkt.csv'.format(city), 'rb')
